@@ -1,4 +1,5 @@
 
+
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   .phone-wrap { display: flex; justify-content: center; padding: 1.5rem 0 2rem; }
@@ -24,10 +25,10 @@
   .ctrl-play { width: 52px; height: 52px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
   .divider { height: 0.5px; background: #2a2a2a; margin: 0 16px; }
   .up-next-header { padding: 10px 16px 4px; color: #fff; font-size: 14px; font-weight: 700; }
-  .queue-item { display: flex; align-items: center; gap: 12px; padding: 7px 16px; cursor: pointer; transition: background 0.15s; border-radius: 0; }
+  .queue-item { display: flex; align-items: center; gap: 12px; padding: 7px 16px; cursor: pointer; transition: background 0.15s; }
   .queue-item:hover { background: rgba(255,255,255,0.05); }
   .queue-item.active-row { background: rgba(255,255,255,0.04); }
-  @keyframes flashGreen { 0%,100% { background: transparent; } 30%,70% { background: rgba(76,217,122,0.18); } }
+  @keyframes flashGreen { 0%,100%{background:transparent;} 30%,70%{background:rgba(76,217,122,0.18);} }
   .queue-item.flash { animation: flashGreen 0.7s ease; }
   .q-thumb { width: 38px; height: 38px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; }
   .q-info { flex: 1; min-width: 0; }
@@ -37,25 +38,23 @@
   .q-badge { font-size: 11px; color: #fff; background: #555; border-radius: 4px; padding: 2px 7px; }
   .q-bars { display: flex; align-items: flex-end; gap: 2px; height: 14px; }
   .q-bar { width: 3px; background: #e8442a; border-radius: 1px; animation: barPulse 0.8s ease-in-out infinite alternate; }
-  .q-bar:nth-child(2) { animation-delay: 0.2s; }
-  .q-bar:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes barPulse { from { height: 4px; } to { height: 13px; } }
+  .q-bar:nth-child(2){animation-delay:.2s;} .q-bar:nth-child(3){animation-delay:.4s;}
+  @keyframes barPulse { from{height:4px;} to{height:13px;} }
   .bottom-actions { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px 10px; border-top: 0.5px solid #2a2a2a; }
   .bottom-btn { background: none; border: none; color: #ccc; font-size: 13px; font-weight: 500; cursor: pointer; padding: 5px 8px; border-radius: 6px; transition: background 0.15s; }
   .bottom-btn:hover { background: rgba(255,255,255,0.08); }
   .bottom-btn.danger { color: #e8442a; }
   .mini-player { display: flex; align-items: center; gap: 10px; padding: 8px 14px 14px; border-top: 0.5px solid #2a2a2a; background: #161616; }
-  .mini-thumb { width: 34px; height: 34px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; background: linear-gradient(135deg, #8B2E1A, #C94C1A); flex-shrink: 0; }
+  .mini-thumb { width: 34px; height: 34px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; background: linear-gradient(135deg,#8B2E1A,#C94C1A); flex-shrink: 0; }
   .mini-info { flex: 1; min-width: 0; }
   .mini-title { color: #fff; font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .mini-artist { color: #777; font-size: 11px; }
   .mini-controls { display: flex; gap: 10px; align-items: center; }
   .mini-btn { background: none; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; }
 
-  /* Overlay — true display:none after fade so pointer events are truly gone */
+  /* Overlay */
   .overlay { position: absolute; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: flex-start; padding: 150px 16px 0; background: rgba(0,0,0,0.55); opacity: 1; transition: opacity 0.18s; }
   .overlay.hidden { opacity: 0; pointer-events: none; }
-
   .context-menu { background: #1e1e1e; border-radius: 14px; width: 100%; overflow: hidden; border: 0.5px solid #333; }
   .ctx-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; cursor: pointer; transition: background 0.15s; border-bottom: 0.5px solid #2a2a2a; }
   .ctx-item:last-child { border-bottom: none; }
@@ -92,16 +91,27 @@
   .eq-btn.clear { background: rgba(232,68,42,0.15); color: #e8442a; }
   .eq-btn.done { background: #e8442a; color: #fff; }
 
-  /* Toast */
-  .toast-area { position: absolute; top: 62px; left: 50%; transform: translateX(-50%); z-index: 60; width: 88%; pointer-events: none; display: flex; flex-direction: column; gap: 6px; }
-  .toast { background: rgba(30,30,30,0.97); border: 0.5px solid #3a3a3a; border-radius: 12px; padding: 9px 12px; display: flex; align-items: center; gap: 10px; opacity: 0; transform: translateY(-10px) scale(0.95); transition: opacity 0.2s ease, transform 0.2s ease; }
-  .toast.visible { opacity: 1; transform: translateY(0) scale(1); }
-  .toast.hiding { opacity: 0; transform: translateY(-6px) scale(0.97); }
-  .t-art { width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  /* Toast with undo */
+  .toast-area { position: absolute; top: 62px; left: 50%; transform: translateX(-50%); z-index: 60; width: 92%; pointer-events: none; display: flex; flex-direction: column; gap: 6px; }
+  .toast { background: rgba(26,26,26,0.98); border: 0.5px solid #3a3a3a; border-radius: 14px; padding: 0; display: flex; flex-direction: column; opacity: 0; transform: translateY(-10px) scale(0.95); transition: opacity 0.22s ease, transform 0.22s ease; pointer-events: none; overflow: hidden; }
+  .toast.visible { opacity: 1; transform: translateY(0) scale(1); pointer-events: all; }
+  .toast.hiding { opacity: 0; transform: translateY(-6px) scale(0.97); pointer-events: none; }
+  .toast-top { display: flex; align-items: center; gap: 10px; padding: 10px 12px 8px; }
+  .t-art { width: 32px; height: 32px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
   .t-text { flex: 1; min-width: 0; }
   .t-title { color: #fff; font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .t-sub { color: #888; font-size: 11px; margin-top: 1px; }
   .t-check { flex-shrink: 0; }
+  .toast-bottom { display: flex; align-items: center; gap: 0; border-top: 0.5px solid #2e2e2e; }
+  .undo-btn { flex: 1; background: none; border: none; color: #e8442a; font-size: 13px; font-weight: 700; cursor: pointer; padding: 9px 12px; text-align: left; transition: background 0.15s; letter-spacing: 0.2px; }
+  .undo-btn:hover { background: rgba(232,68,42,0.1); }
+  .undo-btn:active { background: rgba(232,68,42,0.18); }
+  .timer-wrap { display: flex; align-items: center; justify-content: flex-end; padding: 0 12px; gap: 6px; }
+  .timer-ring { position: relative; width: 22px; height: 22px; flex-shrink: 0; }
+  .timer-ring svg { transform: rotate(-90deg); }
+  .ring-bg { fill: none; stroke: #333; stroke-width: 2.5; }
+  .ring-fill { fill: none; stroke: #e8442a; stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 54; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear; }
+  .timer-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 10px; font-weight: 700; }
 
   .paused .q-bar { animation-play-state: paused; }
   svg { display: block; }
@@ -169,10 +179,9 @@
       </div>
     </div>
 
-    <!-- Toast area -->
     <div class="toast-area" id="toastArea"></div>
 
-    <!-- Context menu overlay — click backdrop to close -->
+    <!-- Context menu -->
     <div class="overlay hidden" id="overlay">
       <div class="context-menu" id="ctxMenu">
         <div class="ctx-item" id="ctxNext">
@@ -202,7 +211,7 @@
       </div>
       <div class="eq-list" id="eqList"></div>
       <div class="eq-footer">
-        <button class="eq-btn clear" onclick="clearAll(); closeEdit();">Clear All</button>
+        <button class="eq-btn clear" onclick="clearAll();closeEdit();">Clear All</button>
         <button class="eq-btn done" onclick="closeEdit()">Done</button>
       </div>
     </div>
@@ -218,10 +227,14 @@ let tracks = [
   { title: 'Shape of You', artist: 'Ed Sheeran', color: '#3a2a1a', emoji: '🎶' }
 ];
 
-let isPlaying = false, currentSeconds = 83, timer = null;
-let selectedIdx = null;
+let isPlaying = false, currentSeconds = 83, timer = null, selectedIdx = null;
 const totalSeconds = 208;
 let dragSrc = null;
+
+// Undo state
+let undoSnapshot = null;
+let undoTimer = null;
+let activeToast = null;
 
 /* ── progress ── */
 function fmt(s) { const m = Math.floor(s/60), r = s%60; return m+':'+(r<10?'0':'')+r; }
@@ -235,7 +248,7 @@ document.getElementById('progressBar').addEventListener('click', function(e) {
   updateProgress();
 });
 
-/* ── play ── */
+/* ── playback ── */
 function togglePlay() {
   isPlaying = !isPlaying;
   document.getElementById('playIcon').style.display = isPlaying ? 'none' : 'block';
@@ -257,116 +270,177 @@ function renderQueue() {
     const div = document.createElement('div');
     div.className = 'queue-item' + (i===0 ? ' active-row' : '');
     div.dataset.idx = i;
-    // Every item opens context menu
-    div.addEventListener('click', function(e) {
-      e.stopPropagation();
-      openMenu(parseInt(this.dataset.idx));
-    });
+    div.addEventListener('click', function(e) { e.stopPropagation(); openMenu(parseInt(this.dataset.idx)); });
     const right = i===0
       ? `<div class="q-right"><span class="q-badge">Up Next</span><div class="q-bars"><div class="q-bar"></div><div class="q-bar"></div><div class="q-bar"></div></div></div>`
-      : `<div class="q-right"><svg width="14" height="14" viewBox="0 0 14 14" fill="#444"><path d="M3 4h8M3 7h8M3 10h8" stroke="#444" stroke-width="1.5" stroke-linecap="round"/></svg></div>`;
+      : `<div class="q-right"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4h10M2 7h10M2 10h10" stroke="#444" stroke-width="1.5" stroke-linecap="round"/></svg></div>`;
     div.innerHTML = `<div class="q-thumb" style="background:${t.color}">${t.emoji}</div><div class="q-info"><div class="q-title">${t.title}</div><div class="q-artist">${t.artist}</div></div>${right}`;
     q.appendChild(div);
   });
 }
 
-/* ── flash a queue row ── */
 function flashRow(idx) {
-  const rows = document.querySelectorAll('.queue-item');
-  if (rows[idx]) {
-    rows[idx].classList.remove('flash');
-    void rows[idx].offsetWidth;
-    rows[idx].classList.add('flash');
-    rows[idx].addEventListener('animationend', () => rows[idx].classList.remove('flash'), {once:true});
-  }
+  setTimeout(() => {
+    const rows = document.querySelectorAll('.queue-item');
+    if (rows[idx]) {
+      rows[idx].classList.remove('flash');
+      void rows[idx].offsetWidth;
+      rows[idx].classList.add('flash');
+      rows[idx].addEventListener('animationend', () => rows[idx].classList.remove('flash'), {once:true});
+    }
+  }, 50);
 }
 
 /* ── overlay / context menu ── */
 const overlay = document.getElementById('overlay');
 const ctxMenu = document.getElementById('ctxMenu');
+function openMenu(idx) { selectedIdx = idx; overlay.classList.remove('hidden'); }
+function closeMenu() { overlay.classList.add('hidden'); selectedIdx = null; }
+overlay.addEventListener('click', e => { if (!ctxMenu.contains(e.target)) closeMenu(); });
 
-function openMenu(idx) {
-  selectedIdx = idx;
-  overlay.classList.remove('hidden');
+/* ── undo toast ── */
+const UNDO_SECS = 5;
+const RING_CIRC = 54; // ~2π×(r=8.6)
+
+function dismissActiveToast() {
+  if (activeToast) {
+    activeToast.classList.remove('visible');
+    activeToast.classList.add('hiding');
+    const t = activeToast;
+    setTimeout(() => t.remove(), 220);
+    activeToast = null;
+  }
+  if (undoTimer) { clearInterval(undoTimer); undoTimer = null; }
+  undoSnapshot = null;
 }
 
-// Close when clicking backdrop (not the menu itself)
-overlay.addEventListener('click', function(e) {
-  if (!ctxMenu.contains(e.target)) closeMenu();
-});
+function showUndoToast(track, label, snapshot) {
+  dismissActiveToast();
+  undoSnapshot = snapshot;
 
-function closeMenu() {
-  overlay.classList.add('hidden');
-  selectedIdx = null;
+  const area = document.getElementById('toastArea');
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = `
+    <div class="toast-top">
+      <div class="t-art" style="background:${track.color}">${track.emoji}</div>
+      <div class="t-text">
+        <div class="t-title">${track.title}</div>
+        <div class="t-sub">${label}</div>
+      </div>
+      <div class="t-check"><svg width="16" height="16" viewBox="0 0 16 16" fill="#4cd97a"><path d="M13.5 3.5l-7.5 7.5-3.5-3.5-1.5 1.5 5 5 9-9z"/></svg></div>
+    </div>
+    <div class="toast-bottom">
+      <button class="undo-btn" id="undoBtnEl">↩ Undo</button>
+      <div class="timer-wrap">
+        <div class="timer-ring">
+          <svg width="22" height="22" viewBox="0 0 22 22">
+            <circle class="ring-bg" cx="11" cy="11" r="8.6"/>
+            <circle class="ring-fill" id="ringFill" cx="11" cy="11" r="8.6"/>
+          </svg>
+          <div class="timer-num" id="timerNum">${UNDO_SECS}</div>
+        </div>
+      </div>
+    </div>
+  `;
+  area.appendChild(el);
+  activeToast = el;
+
+  el.getBoundingClientRect();
+  el.classList.add('visible');
+
+  // Wire undo button
+  el.querySelector('#undoBtnEl').addEventListener('click', e => {
+    e.stopPropagation();
+    if (undoSnapshot) {
+      tracks = undoSnapshot.slice();
+      renderQueue();
+    }
+    dismissActiveToast();
+    showSimpleToast(track, '↩ Undone');
+  });
+
+  // Countdown ring + number
+  let remaining = UNDO_SECS;
+  const ring = el.querySelector('#ringFill');
+  const num = el.querySelector('#timerNum');
+  // start ring full, drain to 0
+  ring.style.strokeDashoffset = '0';
+  // kick off after 1 frame
+  requestAnimationFrame(() => {
+    ring.style.strokeDashoffset = String(RING_CIRC);
+    ring.style.transition = `stroke-dashoffset ${UNDO_SECS}s linear`;
+  });
+
+  undoTimer = setInterval(() => {
+    remaining--;
+    if (num) num.textContent = remaining;
+    if (remaining <= 0) {
+      dismissActiveToast();
+    }
+  }, 1000);
 }
 
-// Wire ctx buttons imperatively so they always use latest selectedIdx
+function showSimpleToast(track, label) {
+  const area = document.getElementById('toastArea');
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = `
+    <div class="toast-top">
+      <div class="t-art" style="background:${track.color}">${track.emoji}</div>
+      <div class="t-text"><div class="t-title">${track.title}</div><div class="t-sub">${label}</div></div>
+      <div class="t-check"><svg width="16" height="16" viewBox="0 0 16 16" fill="#4cd97a"><path d="M13.5 3.5l-7.5 7.5-3.5-3.5-1.5 1.5 5 5 9-9z"/></svg></div>
+    </div>
+  `;
+  area.appendChild(el);
+  el.getBoundingClientRect();
+  el.classList.add('visible');
+  setTimeout(() => { el.classList.remove('visible'); el.classList.add('hiding'); setTimeout(() => el.remove(), 220); }, 1800);
+}
+
+/* ── ctx actions ── */
 document.getElementById('ctxNext').addEventListener('click', function(e) {
   e.stopPropagation();
   if (selectedIdx === null) return;
+  const snap = tracks.slice();
   const t = tracks.splice(selectedIdx, 1)[0];
   tracks.unshift(t);
-  closeMenu();
-  renderQueue();
-  flashRow(0);
-  toast(t, '⚡ Playing next');
+  closeMenu(); renderQueue(); flashRow(0);
+  showUndoToast(t, '⚡ Playing next', snap);
 });
 
 document.getElementById('ctxLater').addEventListener('click', function(e) {
   e.stopPropagation();
   if (selectedIdx === null) return;
+  const snap = tracks.slice();
   const t = tracks[selectedIdx];
-  closeMenu();
-  renderQueue();
-  flashRow(tracks.length - 1);
-  toast(t, '🕐 Added to end of queue');
+  // "Play Later" duplicates to end
+  tracks.push({ ...t });
+  closeMenu(); renderQueue(); flashRow(tracks.length - 1);
+  showUndoToast(t, '🕐 Added to end of queue', snap);
 });
 
 document.getElementById('ctxAdd').addEventListener('click', function(e) {
   e.stopPropagation();
   if (selectedIdx === null) return;
+  const snap = tracks.slice();
   const t = tracks[selectedIdx];
-  const insertAt = Math.min(selectedIdx + 1, tracks.length - 1);
-  closeMenu();
-  renderQueue();
-  flashRow(insertAt);
-  toast(t, '＋ Added to queue');
+  const insertAt = Math.min(selectedIdx + 1, tracks.length);
+  tracks.splice(insertAt, 0, { ...t });
+  closeMenu(); renderQueue(); flashRow(insertAt);
+  showUndoToast(t, '＋ Added to queue', snap);
 });
 
 document.getElementById('ctxRemove').addEventListener('click', function(e) {
   e.stopPropagation();
   if (selectedIdx === null) return;
   tracks.splice(selectedIdx, 1);
-  closeMenu();
-  renderQueue();
+  closeMenu(); renderQueue();
 });
 
-/* ── toast ── */
-function toast(track, message) {
-  const area = document.getElementById('toastArea');
-  const el = document.createElement('div');
-  el.className = 'toast';
-  el.innerHTML = `<div class="t-art" style="background:${track.color}">${track.emoji}</div><div class="t-text"><div class="t-title">${track.title}</div><div class="t-sub">${message}</div></div><div class="t-check"><svg width="16" height="16" viewBox="0 0 16 16" fill="#4cd97a"><path d="M13.5 3.5l-7.5 7.5-3.5-3.5-1.5 1.5 5 5 9-9z"/></svg></div>`;
-  area.appendChild(el);
-  // Force reflow then show
-  el.getBoundingClientRect();
-  el.classList.add('visible');
-  setTimeout(() => {
-    el.classList.remove('visible');
-    el.classList.add('hiding');
-    setTimeout(() => el.remove(), 220);
-  }, 2400);
-}
-
 /* ── edit queue ── */
-function openEdit() {
-  renderEditList();
-  document.getElementById('editPanel').classList.add('open');
-}
-function closeEdit() {
-  document.getElementById('editPanel').classList.remove('open');
-  renderQueue();
-}
+function openEdit() { renderEditList(); document.getElementById('editPanel').classList.add('open'); }
+function closeEdit() { document.getElementById('editPanel').classList.remove('open'); renderQueue(); }
 
 function renderEditList() {
   const list = document.getElementById('eqList');
@@ -383,7 +457,7 @@ function renderEditList() {
       <div class="drag-info"><div class="drag-title">${t.title}</div><div class="drag-artist">${t.artist}</div></div>
       <button class="drag-remove" data-rm="${i}"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.7 4.7l-1.4-1.4L8 6.6 4.7 3.3 3.3 4.7 6.6 8l-3.3 3.3 1.4 1.4L8 9.4l3.3 3.3 1.4-1.4L9.4 8z"/></svg></button>
     `;
-    div.querySelector('.drag-remove').addEventListener('click', (e) => {
+    div.querySelector('.drag-remove').addEventListener('click', e => {
       e.stopPropagation();
       tracks.splice(parseInt(e.currentTarget.dataset.rm), 1);
       renderEditList();
@@ -406,7 +480,6 @@ function renderEditList() {
 
 function clearAll() { tracks = []; renderQueue(); }
 
-/* ── init ── */
 renderQueue();
 updateProgress();
 </script>
